@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurelia Private Aviation — Private Aviation, Redefined</title>
+<meta name="description" content="Aurelia is a private aviation company offering personalized charter flights, a curated fleet, and 24/7 concierge service.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div class="loader" id="loader">
+  <div class="loader-mark">AURELIA</div>
+  <div class="loader-sub">PRIVATE AVIATION</div>
+  <div class="loader-bar"><span></span></div>
+</div>
+
+<!-- ============ CUSTOM CURSOR ============ -->
+<div class="cursor" id="cursor"><span class="cursor-label"></span></div>
+
+<!-- ============ NAVIGATION ============ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-logo">AURELIA</a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#fleet" data-cursor="View">Fleet</a>
+      <a href="#destinations" data-cursor="Explore">Destinations</a>
+      <a href="#experience" data-cursor="Discover">Experience</a>
+      <a href="#about" data-cursor="Learn">About</a>
+      <a href="#contact" data-cursor="Connect">Contact</a>
+    </nav>
+    <a href="#booking" class="btn btn-primary btn-sm nav-cta" data-cursor="Book">Book a Flight</a>
+    <button class="nav-burger" id="navBurger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile" id="navMobile">
+    <a href="#fleet">Fleet</a>
+    <a href="#destinations">Destinations</a>
+    <a href="#experience">Experience</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <a href="#booking" class="btn btn-primary">Book a Flight</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-sky"></div>
+      <div class="hero-photo"></div>
+      <svg class="hero-jet" viewBox="0 0 800 220" aria-hidden="true">
+        <path d="M20 130 C160 118 320 112 420 112 L620 74 C636 70 656 70 664 78 L636 112 L560 122 L470 128 C520 140 566 160 596 186 L566 190 L468 148 L420 150 C360 156 260 158 160 152 L60 168 L36 160 L84 138 L20 146 Z" fill="currentColor"/>
+      </svg>
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <p class="eyebrow reveal-item">PRIVATE AVIATION &bull; EST. 2026</p>
+      <h1 class="hero-title">
+        <span class="line"><span class="line-inner">PRIVATE AVIATION,</span></span>
+        <span class="line"><span class="line-inner">REDEFINED.</span></span>
+      </h1>
+      <p class="hero-desc reveal-item">Experience seamless private travel with exceptional comfort, privacy, and service.</p>
+      <div class="hero-actions reveal-item">
+        <a href="#booking" class="btn btn-primary" data-cursor="Book">Book a Flight <span class="arrow">&rarr;</span></a>
+        <a href="#fleet" class="btn btn-secondary" data-cursor="View">Explore Our Fleet <span class="arrow">&rarr;</span></a>
+      </div>
+    </div>
+    <a href="#booking" class="scroll-indicator" data-cursor="Scroll">
+      <span>Scroll to Explore</span>
+      <span class="scroll-arrow">&darr;</span>
+    </a>
+  </section>
+
+  <!-- ============ BOOKING WIDGET ============ -->
+  <section class="booking-wrap" id="booking">
+    <form class="booking-panel glass" id="searchForm" novalidate>
+      <div class="field">
+        <label for="departure">From</label>
+        <input type="text" id="departure" name="departure" placeholder="Departure city" autocomplete="off">
+        <span class="field-error" data-for="departure"></span>
+      </div>
+      <div class="field">
+        <label for="destination">To</label>
+        <input type="text" id="destination" name="destination" placeholder="Destination city" autocomplete="off">
+        <span class="field-error" data-for="destination"></span>
+      </div>
+      <div class="field">
+        <label for="departDate">Departure</label>
+        <input type="date" id="departDate" name="departDate">
+        <span class="field-error" data-for="departDate"></span>
+      </div>
+      <div class="field">
+        <label for="returnDate">Return</label>
+        <input type="date" id="returnDate" name="returnDate">
+        <span class="field-error" data-for="returnDate"></span>
+      </div>
+      <div class="field">
+        <label for="passengers">Passengers</label>
+        <input type="number" id="passengers" name="passengers" min="1" max="20" value="1">
+        <span class="field-error" data-for="passengers"></span>
+      </div>
+      <div class="field">
+        <label for="aircraft">Aircraft</label>
+        <select id="aircraft" name="aircraft">
+          <option value="">Any</option>
+          {% for craft in fleet %}
+          <option value="{{ craft.id }}">{{ craft.name }}</option>
+          {% endfor %}
+        </select>
+        <span class="field-error" data-for="aircraft"></span>
+      </div>
+      <button type="submit" class="btn btn-primary booking-submit" data-cursor="Search">
+        <span class="btn-text">Search Flights</span>
+        <span class="btn-spinner" aria-hidden="true"></span>
+      </button>
+    </form>
+
+    <div class="booking-results" id="searchResults" hidden>
+      <h3>Available Aircraft</h3>
+      <div class="booking-results-grid" id="searchResultsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ INTRODUCTION ============ -->
+  <section class="intro" id="about">
+    <div class="intro-inner">
+      <div class="intro-left reveal-up">
+        <h2>MORE THAN A FLIGHT.<br>A PRIVATE EXPERIENCE.</h2>
+      </div>
+      <div class="intro-right reveal-up">
+        <p>Aurelia designs every journey around the traveler, not the timetable. From the first inquiry to touchdown, a dedicated concierge team curates aircraft, service, and schedule to match how you actually move through the world.</p>
+        <p class="muted">No terminals. No delays shared with strangers. Just precise, private, personal travel.</p>
+        <a href="#experience" class="link-cta" data-cursor="Discover">Discover the Experience <span class="arrow">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FLEET ============ -->
+  <section class="fleet" id="fleet">
+    <div class="section-head">
+      <p class="eyebrow reveal-item">OUR FLEET</p>
+      <h2 class="reveal-item">Aircraft selected for performance, comfort and exceptional range.</h2>
+    </div>
+    <div class="fleet-grid">
+      {% for craft in fleet %}
+      <article class="fleet-card reveal-up" data-aircraft="{{ craft.id }}">
+        <div class="fleet-card-image">
+          <div class="fleet-card-image-fill fill-{{ loop.index }}"></div>
+        </div>
+        <div class="fleet-card-body">
+          <span class="fleet-card-category">{{ craft.category }}</span>
+          <h3>{{ craft.name }}</h3>
+          <ul class="fleet-card-specs">
+            <li><span>Passengers</span><strong>{{ craft.passengers }}</strong></li>
+            <li><span>Range</span><strong>{{ craft.range_km }}+ km</strong></li>
+            <li><span>Speed</span><strong>{{ craft.speed_kmh }} km/h</strong></li>
+          </ul>
+          <button class="link-cta fleet-view" data-cursor="View" type="button">View Aircraft <span class="arrow">&rarr;</span></button>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ============ AIRCRAFT DETAIL MODAL ============ -->
+  <div class="modal" id="aircraftModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel glass">
+      <button class="modal-close" data-close aria-label="Close">&times;</button>
+      <div class="modal-body" id="modalBody"><!-- populated by JS --></div>
+    </div>
+  </div>
+
+  <!-- ============ DESTINATIONS ============ -->
+  <section class="destinations" id="destinations">
+    <div class="section-head">
+      <p class="eyebrow reveal-item">WHERE WILL YOU GO?</p>
+      <h2 class="reveal-item">A private network spanning every continent.</h2>
+    </div>
+    <div class="map-wrap reveal-up">
+      <div class="world-map">
+        {% for d in destinations %}
+        <button class="map-pin" type="button" style="left:{{ d.x }}%; top:{{ d.y }}%;" data-dest="{{ d.id }}" data-cursor="{{ d.name }}">
+          <span class="map-pin-dot"></span>
+          <span class="map-pin-label">{{ d.name }}</span>
+        </button>
+        {% endfor %}
+      </div>
+      <div class="dest-info" id="destInfo">
+        <p class="dest-info-placeholder">Select a destination to learn more.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section class="experience" id="experience">
+    <div class="section-head">
+      <p class="eyebrow reveal-item">THE AURELIA STANDARD</p>
+      <h2 class="reveal-item">Every detail, considered.</h2>
+    </div>
+    <div class="experience-grid">
+      <div class="exp-card reveal-up exp-large">
+        <div class="exp-fill exp-fill-1"></div>
+        <div class="exp-text"><h3>Personalized Service</h3><p>Dedicated assistance throughout your journey.</p></div>
+      </div>
+      <div class="exp-card reveal-up">
+        <div class="exp-fill exp-fill-2"></div>
+        <div class="exp-text"><h3>Private Lounges</h3><p>Comfortable spaces before departure.</p></div>
+      </div>
+      <div class="exp-card reveal-up">
+        <div class="exp-fill exp-fill-3"></div>
+        <div class="exp-text"><h3>Premium Dining</h3><p>Curated meals tailored to your preferences.</p></div>
+      </div>
+      <div class="exp-card reveal-up">
+        <div class="exp-fill exp-fill-4"></div>
+        <div class="exp-text"><h3>Seamless Connectivity</h3><p>Stay connected throughout your journey.</p></div>
+      </div>
+      <div class="exp-card reveal-up">
+        <div class="exp-fill exp-fill-5"></div>
+        <div class="exp-text"><h3>Privacy</h3><p>A quiet, private environment designed around you.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CABIN ============ -->
+  <section class="cabin">
+    <div class="cabin-bg"></div>
+    <div class="cabin-overlay"></div>
+    <div class="cabin-content">
+      <h2 class="reveal-item">YOUR SPACE.<br>YOUR TIME.<br>YOUR JOURNEY.</h2>
+    </div>
+    <div class="hotspots">
+      <button class="hotspot" style="left:22%; top:62%;" data-hotspot="1" data-cursor="View">01</button>
+      <button class="hotspot" style="left:45%; top:40%;" data-hotspot="2" data-cursor="View">02</button>
+      <button class="hotspot" style="left:66%; top:55%;" data-hotspot="3" data-cursor="View">03</button>
+      <button class="hotspot" style="left:80%; top:35%;" data-hotspot="4" data-cursor="View">04</button>
+    </div>
+    <div class="hotspot-panel glass" id="hotspotPanel" hidden>
+      <button class="modal-close" id="hotspotClose" aria-label="Close">&times;</button>
+      <h4 id="hotspotTitle"></h4>
+      <p id="hotspotText"></p>
+    </div>
+    <div class="hotspot-data" hidden
+      data-1-title="Executive Seating" data-1-text="Hand-finished leather seating that reclines fully flat, engineered for long-range comfort."
+      data-2-title="Premium Dining" data-2-text="A curated in-flight menu prepared to your preference, served on request at any point in the journey."
+      data-3-title="Connectivity" data-3-text="High-speed connectivity throughout the cabin, so the ground never has to wait."
+      data-4-title="Personal Space" data-4-text="Configurable cabin zones for rest, work, or conversation — private wherever you sit.">
+    </div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="stats">
+    <div class="stats-grid">
+      {% for s in stats %}
+      <div class="stat reveal-up">
+        <div class="stat-value" data-count="{{ s.value }}" data-suffix="{{ s.suffix }}">0{{ s.suffix }}</div>
+        <div class="stat-label">{{ s.label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ============ BOOKING PROCESS ============ -->
+  <section class="process">
+    <div class="section-head">
+      <p class="eyebrow reveal-item">HOW IT WORKS</p>
+      <h2 class="reveal-item">Five steps to takeoff.</h2>
+    </div>
+    <div class="process-timeline">
+      <div class="process-step reveal-up"><span class="process-num">01</span><h4>Tell Us Your Journey</h4><p>Share your route, dates, and party size.</p></div>
+      <div class="process-step reveal-up"><span class="process-num">02</span><h4>Choose Your Aircraft</h4><p>We recommend aircraft matched to your trip.</p></div>
+      <div class="process-step reveal-up"><span class="process-num">03</span><h4>Customize Your Experience</h4><p>Catering, ground transport, and cabin preferences.</p></div>
+      <div class="process-step reveal-up"><span class="process-num">04</span><h4>Confirm Your Flight</h4><p>Your concierge finalizes every detail.</p></div>
+      <div class="process-step reveal-up"><span class="process-num">05</span><h4>Fly</h4><p>Arrive minutes before departure. We handle the rest.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="testimonials">
+    <div class="section-head">
+      <p class="eyebrow reveal-item">CLIENT VOICES</p>
+      <h2 class="reveal-item">Trusted by discerning travelers.</h2>
+    </div>
+    <div class="testimonial-carousel" id="testimonialCarousel">
+      <div class="testimonial-track" id="testimonialTrack">
+        {% for t in testimonials %}
+        <div class="testimonial-slide">
+          <div class="stars">{{ '★' * t.rating }}</div>
+          <p class="testimonial-quote">&ldquo;{{ t.quote }}&rdquo;</p>
+          <p class="testimonial-name">{{ t.name }}</p>
+          <p class="testimonial-location">{{ t.location }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="testimonial-nav">
+        <button id="testPrev" aria-label="Previous testimonial">&larr;</button>
+        <div class="testimonial-dots" id="testDots"></div>
+        <button id="testNext" aria-label="Next testimonial">&rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="final-cta">
+    <div class="final-cta-bg"></div>
+    <div class="final-cta-content">
+      <h2 class="reveal-item">YOUR NEXT JOURNEY<br>STARTS HERE.</h2>
+      <p class="reveal-item">Private aviation, tailored around you.</p>
+      <a href="#contact" class="btn btn-primary reveal-item" data-cursor="Request">Request a Flight <span class="arrow">&rarr;</span></a>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="contact" id="contact">
+    <div class="section-head">
+      <p class="eyebrow reveal-item">GET IN TOUCH</p>
+      <h2 class="reveal-item">Speak with our concierge team.</h2>
+    </div>
+    <form class="contact-form glass reveal-up" id="contactForm" novalidate>
+      <div class="form-grid">
+        <div class="field">
+          <label for="c-name">Full Name</label>
+          <input type="text" id="c-name" name="fullName">
+          <span class="field-error" data-for="fullName"></span>
+        </div>
+        <div class="field">
+          <label for="c-email">Email</label>
+          <input type="email" id="c-email" name="email">
+          <span class="field-error" data-for="email"></span>
+        </div>
+        <div class="field">
+          <label for="c-phone">Phone</label>
+          <input type="tel" id="c-phone" name="phone">
+        </div>
+        <div class="field">
+          <label for="c-passengers">Passengers</label>
+          <input type="number" id="c-passengers" name="passengers" min="1" max="20">
+        </div>
+        <div class="field">
+          <label for="c-departure">Departure</label>
+          <input type="text" id="c-departure" name="departure">
+        </div>
+        <div class="field">
+          <label for="c-destination">Destination</label>
+          <input type="text" id="c-destination" name="destination">
+        </div>
+        <div class="field">
+          <label for="c-date">Travel Date</label>
+          <input type="date" id="c-date" name="travelDate">
+        </div>
+        <div class="field field-full">
+          <label for="c-message">Message</label>
+          <textarea id="c-message" name="message" rows="4"></textarea>
+          <span class="field-error" data-for="message"></span>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" data-cursor="Send">
+        <span class="btn-text">Send Request</span>
+        <span class="btn-spinner" aria-hidden="true"></span>
+      </button>
+      <div class="form-status" id="contactStatus" role="status"></div>
+    </form>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <span class="footer-logo">AURELIA</span>
+      <div class="footer-links">
+        <a href="#fleet">Fleet</a>
+        <a href="#destinations">Destinations</a>
+        <a href="#experience">Experience</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram" data-cursor="Follow">IG</a>
+        <a href="#" aria-label="LinkedIn" data-cursor="Follow">IN</a>
+        <a href="#" aria-label="X" data-cursor="Follow">X</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; {{ current_year }} Aurelia Private Aviation.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Booking confirmation toast -->
+<div class="confirm-toast" id="confirmToast" hidden>
+  <div class="confirm-toast-inner glass">
+    <button class="modal-close" id="confirmClose" aria-label="Close">&times;</button>
+    <h3>REQUEST RECEIVED</h3>
+    <p>Our aviation concierge team will review your journey details.</p>
+    <p class="confirm-ref" id="confirmRef"></p>
+  </div>
+</div>
+
+<script>
+  window.__AURELIA_DATA__ = {
+    fleet: {{ fleet | tojson }},
+    destinations: {{ destinations | tojson }}
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+</body>
+</html>
